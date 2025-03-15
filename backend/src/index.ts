@@ -5,6 +5,10 @@ import session from "cookie-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
+import { HTTPSTATUS } from "./config/http.config";
+import { asyncHandler } from "./middlewares/asyncHandler.middleware";
+import { BadRequestException } from "./utils/appError";
+import { ErrorCodeEnum } from "./enums/error-code.enum";
 
 const app  = express();
 const BASE_PATH = config.BASE_PATH;
@@ -30,11 +34,17 @@ app.use(
   })
 );
 
-app.get("/", (req,res,next) => {
-  res.status(200).json({
-    message: "welcome to the Sajal Namdeo's Project Management App",
-  });
-});
+app.get(
+  `/`,
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    throw new BadRequestException("This is a bad request",
+      ErrorCodeEnum.AUTH_INVALID_TOKEN
+    );
+    res.status(HTTPSTATUS.OK).json({
+      message: "Welcome to Sajal Namdeo's Project Management Backend API",
+    });
+  })
+);
 
 app.use(errorHandler);
 

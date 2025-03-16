@@ -154,7 +154,6 @@ export const registerUserService = async (body: {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-
     throw error;
   }
 };
